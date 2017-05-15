@@ -1,0 +1,49 @@
+{
+  "name": "electron-unhandled",
+  "version": "0.0.0",
+  "description": "Catch unhandled errors and promise rejections in your Electron app",
+  "license": "MIT",
+  "repository": "sindresorhus/electron-unhandled",
+  "author": {
+    "name": "Sindre Sorhus",
+    "email": "sindresorhus@gmail.com",
+    "url": "sindresorhus.com"
+  },
+  "scripts": {
+    "test": "xo && ava"
+  },
+  "files": [
+    "index.js"
+  ],
+  "keywords": [
+    "electron",
+    "unhandled",
+    "error",
+    "exception",
+    "promise",
+    "rejection",
+    "uncaught",
+    "handler",
+    "stack",
+    "report",
+    "log",
+    "logger",
+    "debug",
+    "debugging"
+  ],
+  "dependencies": {
+    "clean-stack": "^1.2.0"
+  },
+  "devDependencies": {
+    "ava": "*",
+    "electron": "^1.7.0",
+    "execa": "^0.6.3",
+    "xo": "*"
+  },
+  "xo": {
+    "envs": [
+      "node",
+      "browser"
+    ]
+  }
+}
