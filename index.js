@@ -17,10 +17,16 @@ module.exports = options => {
 	}, options);
 
 	const handleError = (title, err) => {
-		options.logger(err);
+		const showErrorBox = (electron.dialog || electron.remote.dialog).showErrorBox;
+
+		try {
+			options.logger(err);
+		} catch (err2) { // eslint-disable-line unicorn/catch-error-name
+			showErrorBox('The function specified in the `logger` option in electron-unhandled threw an error', err2.stack);
+			return;
+		}
 
 		if (options.showDialog) {
-			const showErrorBox = (electron.dialog || electron.remote.dialog).showErrorBox;
 			const stack = err ? (err.stack || err.message || err || '[No error message]') : '[Undefined error]';
 			showErrorBox(title, cleanStack(stack));
 		}
