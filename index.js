@@ -2,6 +2,8 @@
 const electron = require('electron');
 const cleanStack = require('clean-stack');
 
+const clipboard = electron.clipboard || electron.remote.clipboard;
+
 let installed = false;
 
 module.exports = options => {
@@ -17,18 +19,35 @@ module.exports = options => {
 	}, options);
 
 	const handleError = (title, err) => {
-		const showErrorBox = (electron.dialog || electron.remote.dialog).showErrorBox;
+		const isReady = (electron.app || electron.remote.app).isReady();
+		const dialog = (electron.dialog || electron.remote.dialog);
 
 		try {
 			options.logger(err);
 		} catch (err2) { // eslint-disable-line unicorn/catch-error-name
-			showErrorBox('The function specified in the `logger` option in electron-unhandled threw an error', err2.stack);
+			dialog.showErrorBox('The function specified in the `logger` option in electron-unhandled threw an error', err2.stack);
 			return;
 		}
 
 		if (options.showDialog) {
 			const stack = err ? (err.stack || err.message || err || '[No error message]') : '[Undefined error]';
-			showErrorBox(title, cleanStack(stack));
+
+			if (isReady) {
+				dialog.showMessageBox({
+					type: 'error',
+					buttons: ['Copy to clipboard', 'Ok'],
+					defaultId: 1,
+					title,
+					noLink: true,
+					message: cleanStack(stack)
+				}, btnIndex => {
+					if (btnIndex === 0) {
+						clipboard.writeText(cleanStack(stack));
+					}
+				});
+			} else {
+				dialog.showErrorBox(title, cleanStack(stack));
+			}
 		}
 	};
 
