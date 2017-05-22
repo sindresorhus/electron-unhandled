@@ -37,7 +37,7 @@ module.exports = options => {
 			if (isReady) {
 				const btnIndex = dialog.showMessageBox({
 					type: 'error',
-					buttons: [os.type === 'Darwin' ? 'Copy Error' : 'Copy error', 'OK'],
+					buttons: [process.platform === 'darwin' ? 'Copy Error' : 'Copy error', 'OK'],
 					defaultId: 1,
 					title,
 					noLink: true,
