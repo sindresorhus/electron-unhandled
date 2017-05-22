@@ -32,6 +32,7 @@ module.exports = options => {
 
 		if (options.showDialog) {
 			const stack = err ? (err.stack || err.message || err || '[No error message]') : '[Undefined error]';
+			const message = err ? (err.message || err || '[No error message]') : '[Undefined error]';
 
 			if (isReady) {
 				const btnIndex = dialog.showMessageBox({
@@ -39,8 +40,8 @@ module.exports = options => {
 					buttons: [process.platform === 'darwin' ? 'Copy Error' : 'Copy error', 'OK'],
 					defaultId: 1,
 					title,
+					message,
 					noLink: true,
-					message: err.message,
 					detail: extractStack(err)
 				});
 				if (btnIndex === 0) {
