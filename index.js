@@ -1,6 +1,5 @@
 'use strict';
 const electron = require('electron');
-const os = require('os');
 const cleanStack = require('clean-stack');
 const extractStack = require('extract-stack');
 
