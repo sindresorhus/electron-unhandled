@@ -1,6 +1,8 @@
 'use strict';
 const electron = require('electron');
+const os = require('os');
 const cleanStack = require('clean-stack');
+const extractStack = require('extract-stack');
 
 const clipboard = electron.clipboard || electron.remote.clipboard;
 
@@ -33,18 +35,18 @@ module.exports = options => {
 			const stack = err ? (err.stack || err.message || err || '[No error message]') : '[Undefined error]';
 
 			if (isReady) {
-				dialog.showMessageBox({
+				const btnIndex = dialog.showMessageBox({
 					type: 'error',
-					buttons: ['Copy to clipboard', 'Ok'],
+					buttons: [os.type === 'Darwin' ? 'Copy Error' : 'Copy error', 'OK'],
 					defaultId: 1,
 					title,
 					noLink: true,
-					message: cleanStack(stack)
-				}, btnIndex => {
-					if (btnIndex === 0) {
-						clipboard.writeText(cleanStack(stack));
-					}
+					message: err.message,
+					detail: extractStack(err)
 				});
+				if (btnIndex === 0) {
+					clipboard.writeText(cleanStack(stack));
+				}
 			} else {
 				dialog.showErrorBox(title, cleanStack(stack));
 			}
