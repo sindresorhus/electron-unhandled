@@ -1,8 +1,10 @@
 'use strict';
 const electron = require('electron');
 const cleanStack = require('clean-stack');
-const extractStack = require('extract-stack');
+const ensureError = require('ensure-error');
 
+const app = electron.app || electron.remote.app;
+const dialog = electron.dialog || electron.remote.dialog;
 const clipboard = electron.clipboard || electron.remote.clipboard;
 
 let installed = false;
@@ -20,35 +22,37 @@ module.exports = options => {
 	}, options);
 
 	const handleError = (title, err) => {
-		const isReady = (electron.app || electron.remote.app).isReady();
-		const dialog = (electron.dialog || electron.remote.dialog);
+		err = ensureError(err);
 
 		try {
 			options.logger(err);
 		} catch (err2) { // eslint-disable-line unicorn/catch-error-name
-			dialog.showErrorBox('The function specified in the `logger` option in electron-unhandled threw an error', err2.stack);
+			dialog.showErrorBox('The `logger` option function in electron-unhandled threw an error', ensureError(err2).stack);
 			return;
 		}
 
 		if (options.showDialog) {
-			const stack = err ? (err.stack || err.message || err || '[No error message]') : '[Undefined error]';
-			const message = err ? (err.message || err || '[No error message]') : '[Undefined error]';
+			const stack = cleanStack(err.stack);
 
-			if (isReady) {
+			if (app.isReady()) {
+				// Intentionally not using the `title` option as it's not shown on macOS
 				const btnIndex = dialog.showMessageBox({
 					type: 'error',
-					buttons: [process.platform === 'darwin' ? 'Copy Error' : 'Copy error', 'OK'],
-					defaultId: 1,
-					title,
-					message,
+					buttons: [
+						'OK',
+						process.platform === 'darwin' ? 'Copy Error' : 'Copy error'
+					],
+					defaultId: 0,
 					noLink: true,
-					detail: extractStack(err)
+					message: title,
+					detail: cleanStack(err.stack, {pretty: true})
 				});
-				if (btnIndex === 0) {
-					clipboard.writeText(cleanStack(stack));
+
+				if (btnIndex === 1) {
+					clipboard.writeText(`${title}\n${stack}`);
 				}
 			} else {
-				dialog.showErrorBox(title, cleanStack(stack));
+				dialog.showErrorBox(title, stack);
 			}
 		}
 	};
