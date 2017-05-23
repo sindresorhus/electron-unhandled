@@ -32,7 +32,8 @@
     "debugging"
   ],
   "dependencies": {
-    "clean-stack": "^1.2.0"
+    "clean-stack": "^1.2.0",
+    "extract-stack": "^1.0.0"
   },
   "devDependencies": {
     "ava": "*",
