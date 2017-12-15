@@ -1,6 +1,6 @@
 # electron-unhandled [![Build Status](https://travis-ci.org/sindresorhus/electron-unhandled.svg?branch=master)](https://travis-ci.org/sindresorhus/electron-unhandled)
 
-> Catch unhandled errors and promise rejections in your [Electron](http://electron.atom.io) app
+> Catch unhandled errors and promise rejections in your [Electron](https://electronjs.org) app
 
 You can use this module directly in both the main and renderer process.
 
@@ -8,7 +8,7 @@ You can use this module directly in both the main and renderer process.
 ## Install
 
 ```
-$ npm install --save electron-unhandled
+$ npm install electron-unhandled
 ```
 
 
