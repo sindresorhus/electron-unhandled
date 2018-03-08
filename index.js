@@ -2,7 +2,7 @@
 const noop = x => x;
 
 const electron = require('electron');
-const cleanStack = require('clean-stack');
+const cleanStack = noop;
 const ensureError = noop;
 
 const app = electron.app || electron.remote.app;
