@@ -1,7 +1,9 @@
 'use strict';
+const noop = x => x;
+
 const electron = require('electron');
-const cleanStack = require('clean-stack');
-const ensureError = require('ensure-error');
+const cleanStack = noop;
+const ensureError = noop;
 
 const app = electron.app || electron.remote.app;
 const dialog = electron.dialog || electron.remote.dialog;
