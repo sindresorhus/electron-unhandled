@@ -2,6 +2,7 @@
 const electron = require('electron');
 const cleanStack = require('clean-stack');
 const ensureError = require('ensure-error');
+const debounce = require('lodash.debounce');
 
 const app = electron.app || electron.remote.app;
 const dialog = electron.dialog || electron.remote.dialog;
@@ -58,12 +59,20 @@ module.exports = options => {
 	};
 
 	if (process.type === 'renderer') {
+		const errorHandler = debounce(error => {
+			handleError('Unhandled Error', error);
+		}, 200);
 		window.addEventListener('error', event => {
-			handleError('Unhandled Error', event.error);
+			event.preventDefault();
+			errorHandler(event.error);
 		});
 
+		const rejectionHandler = debounce(reason => {
+			handleError('Unhandled Promise Rejection', reason);
+		}, 200);
 		window.addEventListener('unhandledrejection', event => {
-			handleError('Unhandled Promise Rejection', event.reason);
+			event.preventDefault();
+			rejectionHandler(event.reason);
 		});
 	} else {
 		process.on('uncaughtException', err => {
