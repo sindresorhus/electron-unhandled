@@ -72,7 +72,7 @@ module.exports = options => {
 		}, 200);
 		window.addEventListener('unhandledrejection', event => {
 			event.preventDefault();
-			rejectionHandler(event.reason);
+			rejectionHandler(event.reason || event.detail.reason);
 		});
 	} else {
 		process.on('uncaughtException', err => {
