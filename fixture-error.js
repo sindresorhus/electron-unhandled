@@ -7,8 +7,8 @@ const fixture = new Error('foo');
 
 unhandled({
 	showDialog: false,
-	logger: err => {
-		assert.strictEqual(err.message, fixture.message);
+	logger: error => {
+		assert.strictEqual(error.message, fixture.message);
 		electron.app.quit();
 	}
 });

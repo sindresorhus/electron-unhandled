@@ -18,10 +18,11 @@ module.exports = options => {
 
 	installed = true;
 
-	options = Object.assign({
+	options = {
 		logger: console.error,
-		showDialog: !isDev
-	}, options);
+		showDialog: !isDev,
+		...options
+	};
 
 	const handleError = (title, error) => {
 		error = ensureError(error);
@@ -38,7 +39,7 @@ module.exports = options => {
 
 			if (app.isReady()) {
 				// Intentionally not using the `title` option as it's not shown on macOS
-				const btnIndex = dialog.showMessageBox({
+				const buttonIndex = dialog.showMessageBox({
 					type: 'error',
 					buttons: [
 						'OK',
@@ -50,7 +51,7 @@ module.exports = options => {
 					detail: cleanStack(error.stack, {pretty: true})
 				});
 
-				if (btnIndex === 1) {
+				if (buttonIndex === 1) {
 					clipboard.writeText(`${title}\n${stack}`);
 				}
 			} else {
