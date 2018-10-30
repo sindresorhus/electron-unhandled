@@ -23,18 +23,18 @@ module.exports = options => {
 		showDialog: !isDev
 	}, options);
 
-	const handleError = (title, err) => {
-		err = ensureError(err);
+	const handleError = (title, error) => {
+		error = ensureError(error);
 
 		try {
-			options.logger(err);
-		} catch (err2) { // eslint-disable-line unicorn/catch-error-name
-			dialog.showErrorBox('The `logger` option function in electron-unhandled threw an error', ensureError(err2).stack);
+			options.logger(error);
+		} catch (loggerError) { // eslint-disable-line unicorn/catch-error-name
+			dialog.showErrorBox('The `logger` option function in electron-unhandled threw an error', ensureError(loggerError).stack);
 			return;
 		}
 
 		if (options.showDialog) {
-			const stack = cleanStack(err.stack);
+			const stack = cleanStack(error.stack);
 
 			if (app.isReady()) {
 				// Intentionally not using the `title` option as it's not shown on macOS
@@ -47,7 +47,7 @@ module.exports = options => {
 					defaultId: 0,
 					noLink: true,
 					message: title,
-					detail: cleanStack(err.stack, {pretty: true})
+					detail: cleanStack(error.stack, {pretty: true})
 				});
 
 				if (btnIndex === 1) {
@@ -76,12 +76,12 @@ module.exports = options => {
 			rejectionHandler(event.reason);
 		});
 	} else {
-		process.on('uncaughtException', err => {
-			handleError('Unhandled Error', err);
+		process.on('uncaughtException', error => {
+			handleError('Unhandled Error', error);
 		});
 
-		process.on('unhandledRejection', err => {
-			handleError('Unhandled Promise Rejection', err);
+		process.on('unhandledRejection', error => {
+			handleError('Unhandled Promise Rejection', error);
 		});
 	}
 };
