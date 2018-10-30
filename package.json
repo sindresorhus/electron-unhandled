@@ -10,6 +10,7 @@
 		"url": "sindresorhus.com"
 	},
 	"scripts": {
+		"start": "electron example.js",
 		"test": "xo && ava"
 	},
 	"files": [
@@ -40,6 +41,7 @@
 	"devDependencies": {
 		"ava": "^0.25.0",
 		"electron": "^3.0.6",
+		"electron-util": "^0.10.2",
 		"execa": "^1.0.0",
 		"xo": "^0.23.0"
 	},

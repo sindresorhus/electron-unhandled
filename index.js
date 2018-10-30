@@ -8,10 +8,62 @@ const isDev = require('electron-is-dev');
 const app = electron.app || electron.remote.app;
 const dialog = electron.dialog || electron.remote.dialog;
 const clipboard = electron.clipboard || electron.remote.clipboard;
+const appName = app.getName();
 
 let installed = false;
 
-module.exports = options => {
+let options = {
+	logger: console.error,
+	showDialog: !isDev
+};
+
+const handleError = (title, error) => {
+	error = ensureError(error);
+
+	try {
+		options.logger(error);
+	} catch (loggerError) { // eslint-disable-line unicorn/catch-error-name
+		dialog.showErrorBox('The `logger` option function in electron-unhandled threw an error', ensureError(loggerError).stack);
+		return;
+	}
+
+	if (options.showDialog) {
+		const stack = cleanStack(error.stack);
+
+		if (app.isReady()) {
+			const buttons = [
+				'OK',
+				process.platform === 'darwin' ? 'Copy Error' : 'Copy error'
+			];
+
+			if (options.reportButton) {
+				buttons.push('Report…');
+			}
+
+			// Intentionally not using the `title` option as it's not shown on macOS
+			const buttonIndex = dialog.showMessageBox({
+				type: 'error',
+				buttons,
+				defaultId: 0,
+				noLink: true,
+				message: title,
+				detail: cleanStack(error.stack, {pretty: true})
+			});
+
+			if (buttonIndex === 1) {
+				clipboard.writeText(`${title}\n${stack}`);
+			}
+
+			if (buttonIndex === 2) {
+				options.reportButton(error);
+			}
+		} else {
+			dialog.showErrorBox(title, stack);
+		}
+	}
+};
+
+module.exports = inputOptions => {
 	if (installed) {
 		return;
 	}
@@ -19,45 +71,8 @@ module.exports = options => {
 	installed = true;
 
 	options = {
-		logger: console.error,
-		showDialog: !isDev,
-		...options
-	};
-
-	const handleError = (title, error) => {
-		error = ensureError(error);
-
-		try {
-			options.logger(error);
-		} catch (loggerError) { // eslint-disable-line unicorn/catch-error-name
-			dialog.showErrorBox('The `logger` option function in electron-unhandled threw an error', ensureError(loggerError).stack);
-			return;
-		}
-
-		if (options.showDialog) {
-			const stack = cleanStack(error.stack);
-
-			if (app.isReady()) {
-				// Intentionally not using the `title` option as it's not shown on macOS
-				const buttonIndex = dialog.showMessageBox({
-					type: 'error',
-					buttons: [
-						'OK',
-						process.platform === 'darwin' ? 'Copy Error' : 'Copy error'
-					],
-					defaultId: 0,
-					noLink: true,
-					message: title,
-					detail: cleanStack(error.stack, {pretty: true})
-				});
-
-				if (buttonIndex === 1) {
-					clipboard.writeText(`${title}\n${stack}`);
-				}
-			} else {
-				dialog.showErrorBox(title, stack);
-			}
-		}
+		...options,
+		...inputOptions
 	};
 
 	if (process.type === 'renderer') {
@@ -85,4 +100,8 @@ module.exports = options => {
 			handleError('Unhandled Promise Rejection', error);
 		});
 	}
+};
+
+module.exports.logError = error => {
+	handleError(`${appName} encountered an error.`, error);
 };
