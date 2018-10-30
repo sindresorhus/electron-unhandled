@@ -21,7 +21,6 @@ unhandled();
 ```
 
 
-
 ## API
 
 ### unhandled([options])
@@ -44,7 +43,7 @@ Can be useful if you for example integrate with Sentry.
 #### showDialog
 
 Type: `boolean`<br>
-Default: `true`
+Default: [Only in production](https://github.com/sindresorhus/electron-is-dev)
 
 Present an error dialog to the user.
 

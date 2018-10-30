@@ -3,6 +3,7 @@ const electron = require('electron');
 const cleanStack = require('clean-stack');
 const ensureError = require('ensure-error');
 const debounce = require('lodash.debounce');
+const isDev = require('electron-is-dev');
 
 const app = electron.app || electron.remote.app;
 const dialog = electron.dialog || electron.remote.dialog;
@@ -19,7 +20,7 @@ module.exports = options => {
 
 	options = Object.assign({
 		logger: console.error,
-		showDialog: true
+		showDialog: !isDev
 	}, options);
 
 	const handleError = (title, err) => {
