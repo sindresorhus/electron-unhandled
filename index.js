@@ -102,6 +102,11 @@ module.exports = inputOptions => {
 	}
 };
 
-module.exports.logError = error => {
-	handleError(`${appName} encountered an error.`, error);
+module.exports.logError = (error, options) => {
+	options = {
+		title: `${appName} encountered an error`,
+		...options
+	};
+
+	handleError(options.title, error);
 };

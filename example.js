@@ -22,5 +22,5 @@ let mainWindow;
 	mainWindow = new electron.BrowserWindow();
 	mainWindow.loadURL('https://google.com');
 
-	unhandled.logError(new Error('Test'));
+	unhandled.logError(new Error('Test'), {title: 'Custom Title'});
 })();

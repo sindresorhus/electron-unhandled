@@ -75,11 +75,28 @@ unhandled({
 
 [Example of how the GitHub issue will look like.](https://github.com/sindresorhus/electron-unhandled/issues/new?body=%60%60%60%0AError%3A+Test%0A++++at+%2FUsers%2Fsindresorhus%2Fdev%2Foss%2Felectron-unhandled%2Fexample.js%3A27%3A21%0A%60%60%60%0A%0A---%0A%0AExample+1.1.0%0AElectron+3.0.8%0Adarwin+18.2.0%0ALocale%3A+en-US)
 
-### unhandled.logError(error)
+### unhandled.logError(error, [options])
 
 Log an error. This does the same as with caught unhandled errors.
 
 It will use the same options specified in the `unhandled()` call or the defaults.
+
+#### error
+
+Type: `Error`
+
+Error to log.
+
+#### options
+
+Type: `Object`
+
+##### title
+
+Type: `string`<br>
+Default: `${appName} encountered an error`
+
+Title of the error dialog.
 
 
 ## Related
