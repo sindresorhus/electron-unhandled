@@ -11,10 +11,11 @@
 	},
 	"scripts": {
 		"start": "electron example.js",
-		"test": "xo && ava"
+		"test": "xo && ava && tsd"
 	},
 	"files": [
-		"index.js"
+		"index.js",
+		"index.d.ts"
 	],
 	"keywords": [
 		"electron",
@@ -33,17 +34,18 @@
 		"debugging"
 	],
 	"dependencies": {
-		"clean-stack": "^2.0.0",
+		"clean-stack": "^2.1.0",
 		"electron-is-dev": "^1.0.1",
 		"ensure-error": "^1.0.0",
 		"lodash.debounce": "^4.0.8"
 	},
 	"devDependencies": {
-		"ava": "^0.25.0",
+		"ava": "^1.4.1",
 		"electron": "^3.0.6",
 		"electron-util": "^0.10.2",
 		"execa": "^1.0.0",
-		"xo": "^0.23.0"
+		"tsd": "^0.7.2",
+		"xo": "^0.24.0"
 	},
 	"xo": {
 		"nodeVersion": ">=10",
