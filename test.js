@@ -14,9 +14,9 @@ const run = file => execa.stdout(electron, [file], {
 });
 
 test('error', async t => {
-	await t.notThrows(run('fixture-error.js'));
+	await t.notThrowsAsync(run('fixture-error.js'));
 });
 
 test('rejection', async t => {
-	await t.notThrows(run('fixture-rejection.js'));
+	await t.notThrowsAsync(run('fixture-rejection.js'));
 });
