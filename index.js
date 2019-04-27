@@ -89,7 +89,7 @@ module.exports = inputOptions => {
 		}, 200);
 		window.addEventListener('unhandledrejection', event => {
 			event.preventDefault();
-			rejectionHandler(event.reason);
+			rejectionHandler(event.reason || event.detail.reason);
 		});
 	} else {
 		process.on('uncaughtException', error => {
