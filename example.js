@@ -1,5 +1,5 @@
 'use strict';
-const electron = require('electron');
+const {app, BrowserWindow} = require('electron');
 const {openNewGitHubIssue, debugInfo} = require('electron-util');
 const unhandled = require('.');
 
@@ -17,10 +17,10 @@ unhandled({
 let mainWindow;
 
 (async () => {
-	await electron.app.whenReady();
+	await app.whenReady();
 
-	mainWindow = new electron.BrowserWindow();
-	mainWindow.loadURL('https://google.com');
+	mainWindow = new BrowserWindow();
+	await mainWindow.loadURL('https://google.com');
 
 	unhandled.logError(new Error('Test'), {title: 'Custom Title'});
 })();

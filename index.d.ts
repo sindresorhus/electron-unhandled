@@ -61,12 +61,12 @@ declare const unhandled: {
 	(options?: unhandled.UnhandledOptions): void;
 
 	/**
-	 * Log an error. This does the same as with caught unhandled errors.
-	 *
-	 * It will use the same options specified in the `unhandled()` call or the defaults.
-	 *
-	 * @param error - Error to log.
-	 */
+	Log an error. This does the same as with caught unhandled errors.
+
+	It will use the same options specified in the `unhandled()` call or the defaults.
+
+	@param error - Error to log.
+	*/
 	logError(error: Error, options?: unhandled.LogErrorOptions): void;
 };
 

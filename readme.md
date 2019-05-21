@@ -11,7 +11,7 @@ You can use this module directly in both the main and renderer process.
 $ npm install electron-unhandled
 ```
 
-Requires Electron 3 or later.
+*Requires Electron 5 or later.*
 
 
 ## Usage
@@ -31,7 +31,7 @@ You probably want to call this both in the main process and any renderer process
 
 ### options
 
-Type: `Object`
+Type: `object`
 
 #### logger
 
@@ -89,7 +89,7 @@ Error to log.
 
 #### options
 
-Type: `Object`
+Type: `object`
 
 ##### title
 
