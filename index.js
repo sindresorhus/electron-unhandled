@@ -10,6 +10,9 @@ const dialog = electron.dialog || electron.remote.dialog;
 const clipboard = electron.clipboard || electron.remote.clipboard;
 const appName = app.getName();
 
+// The dialog.showMessageBox method has been split into a sync and an async variant in Electron 6.0.0
+const showMessageBox = dialog.showMessageBoxSync || dialog.showMessageBox;
+
 let installed = false;
 
 let options = {
@@ -41,7 +44,7 @@ const handleError = (title, error) => {
 			}
 
 			// Intentionally not using the `title` option as it's not shown on macOS
-			const buttonIndex = dialog.showMessageBox({
+			const buttonIndex = showMessageBox({
 				type: 'error',
 				buttons,
 				defaultId: 0,
