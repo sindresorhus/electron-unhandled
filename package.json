@@ -40,10 +40,10 @@
 		"lodash.debounce": "^4.0.8"
 	},
 	"devDependencies": {
-		"ava": "^1.4.1",
-		"electron": "^5.0.1",
-		"electron-util": "^0.11.0",
-		"execa": "^1.0.0",
+		"ava": "^2.2.0",
+		"electron": "^6.0.1",
+		"electron-util": "^0.12.1",
+		"execa": "^2.0.3",
 		"tsd": "^0.7.3",
 		"xo": "^0.24.0"
 	},

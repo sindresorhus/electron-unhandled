@@ -4,7 +4,7 @@ import execa from 'execa';
 
 // TODO: Improve these tests when https://github.com/avajs/ava/issues/1332 is fixed
 
-const run = file => execa.stdout(electron, [file], {
+const run = async file => execa(electron, [file], {
 	cwd: __dirname,
 	env: {
 		ELECTRON_ENABLE_LOGGING: true,

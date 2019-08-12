@@ -25,7 +25,7 @@ unhandled();
 
 ## API
 
-### unhandled([options])
+### unhandled(options?)
 
 You probably want to call this both in the main process and any renderer processes to catch all possible errors.
 
@@ -105,8 +105,3 @@ Title of the error dialog.
 - [electron-debug](https://github.com/sindresorhus/electron-debug) - Adds useful debug features to your Electron app
 - [electron-context-menu](https://github.com/sindresorhus/electron-context-menu) - Context menu for your Electron app
 - [electron-dl](https://github.com/sindresorhus/electron-dl) - Simplified file downloads for your Electron app
-
-
-## License
-
-MIT © [Sindre Sorhus](https://sindresorhus.com)
