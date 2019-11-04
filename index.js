@@ -8,7 +8,7 @@ const isDev = require('electron-is-dev');
 const app = electron.app || electron.remote.app;
 const dialog = electron.dialog || electron.remote.dialog;
 const clipboard = electron.clipboard || electron.remote.clipboard;
-const appName = app.getName();
+const appName = 'name' in app ? app.name : app.getName();
 
 // The dialog.showMessageBox method has been split into a sync and an async variant in Electron 6.0.0
 const showMessageBox = dialog.showMessageBoxSync || dialog.showMessageBox;
