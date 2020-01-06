@@ -84,7 +84,7 @@ module.exports = inputOptions => {
 		}, 200);
 		window.addEventListener('error', event => {
 			event.preventDefault();
-			errorHandler(event.error);
+			errorHandler(event.error || event);
 		});
 
 		const rejectionHandler = debounce(reason => {
