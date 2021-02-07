@@ -18,12 +18,12 @@ let installed = false;
 let options = {
 	logger: console.error,
 	showDialog: !isDev,
-	filters: [/testError/]
+	filter: []
 };
 
 const handleError = (title, error) => {
 	error = ensureError(error);
-	if (options.filters && options.filters.some(regex => regex.test(error.message))) {
+	if (options.filter && options.filter.some(regex => regex.test(error.message))) {
 		return;
 	}
 

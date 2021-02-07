@@ -16,6 +16,14 @@ declare namespace unhandled {
 		*/
 		readonly showDialog?: boolean;
 
+	
+		/**
+	   Filter option that receives an array of regex.
+	  electron-unhandled would not show the error dialog if error message passed by any of regex.
+        @default []
+		*/
+		readonly filter?: Array<RegExp>;
+
 		/**
 		When specified, the error dialog will include a `Report…` button, which when clicked, executes the given function with the error as the first argument.
 

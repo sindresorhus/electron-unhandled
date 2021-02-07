@@ -22,5 +22,5 @@ test('rejection', async t => {
 });
 
 test('filter', async t => {
-	await t.notThrowsAsync(run('filter-error.js'));
+	await t.notThrowsAsync(run('fixture-filter-error-message.js'));
 });
