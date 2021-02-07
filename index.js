@@ -17,11 +17,15 @@ let installed = false;
 
 let options = {
 	logger: console.error,
-	showDialog: !isDev
+	showDialog: !isDev,
+	filters: [/testError/]
 };
 
 const handleError = (title, error) => {
 	error = ensureError(error);
+	if (options.filter && options.filters.some(regex => regex.test(error.message))) {
+		return;
+	}
 
 	try {
 		options.logger(error);
