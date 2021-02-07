@@ -23,7 +23,7 @@ let options = {
 
 const handleError = (title, error) => {
 	error = ensureError(error);
-	if (options.filter && options.filters.some(regex => regex.test(error.message))) {
+	if (options.filters && options.filters.some(regex => regex.test(error.message))) {
 		return;
 	}
 
