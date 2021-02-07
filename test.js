@@ -2,7 +2,7 @@ import electron from 'electron';
 import test from 'ava';
 import execa from 'execa';
 
-//  Improve these tests when https://github.com/avajs/ava/issues/1332 is fixed
+// TODO: Improve these tests when https://github.com/avajs/ava/issues/1332 is fixed
 
 const run = async file => execa(electron, [file], {
 	cwd: __dirname,
