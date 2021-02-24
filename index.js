@@ -119,5 +119,7 @@ module.exports.logError = (error, options) => {
 		...options
 	};
 
-	handleError(options.title, error);
+	if (typeof invokeErrorHandler === 'function') {
+		invokeErrorHandler(options.title, error)
+	} else handleError(options.title, error);
 };
