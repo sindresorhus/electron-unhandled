@@ -1,14 +1,25 @@
 'use strict';
-const electron = require('electron');
+const {app, dialog, clipboard} = require('electron');
 const cleanStack = require('clean-stack');
 const ensureError = require('ensure-error');
 const debounce = require('lodash.debounce');
 const isDev = require('electron-is-dev');
 
-const app = electron.app || electron.remote.app;
-const dialog = electron.dialog || electron.remote.dialog;
-const clipboard = electron.clipboard || electron.remote.clipboard;
 const appName = 'name' in app ? app.name : app.getName();
+
+let invokeErrorHandler;
+
+const ERROR_HANDLER_CHANNEL = 'electron-unhandled.ERROR';
+
+if (process.type === 'renderer') {
+	const {ipcRenderer} = require('electron');
+	invokeErrorHandler = async (...args) => ipcRenderer.invoke(ERROR_HANDLER_CHANNEL, ...args);
+} else {
+	const {ipcMain} = require('electron');
+	ipcMain.handle(ERROR_HANDLER_CHANNEL, async (evt, ...args) => {
+		handleError(...args);
+	});
+}
 
 // The dialog.showMessageBox method has been split into a sync and an async variant in Electron 6.0.0
 const showMessageBox = dialog.showMessageBoxSync || dialog.showMessageBox;
@@ -80,7 +91,7 @@ module.exports = inputOptions => {
 
 	if (process.type === 'renderer') {
 		const errorHandler = debounce(error => {
-			handleError('Unhandled Error', error);
+			invokeErrorHandler('Unhandled Error', error);
 		}, 200);
 		window.addEventListener('error', event => {
 			event.preventDefault();
@@ -88,7 +99,7 @@ module.exports = inputOptions => {
 		});
 
 		const rejectionHandler = debounce(reason => {
-			handleError('Unhandled Promise Rejection', reason);
+			invokeErrorHandler('Unhandled Promise Rejection', reason);
 		}, 200);
 		window.addEventListener('unhandledrejection', event => {
 			event.preventDefault();
