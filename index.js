@@ -5,7 +5,7 @@ const ensureError = require('ensure-error');
 const debounce = require('lodash.debounce');
 const isDev = require('electron-is-dev');
 
-const appName = 'name' in app ? app.name : app.getName();
+let appName;
 
 let invokeErrorHandler;
 
@@ -15,6 +15,7 @@ if (process.type === 'renderer') {
 	const {ipcRenderer} = require('electron');
 	invokeErrorHandler = async (...args) => ipcRenderer.invoke(ERROR_HANDLER_CHANNEL, ...args);
 } else {
+	appName = 'name' in app ? app.name : app.getName();
 	const {ipcMain} = require('electron');
 	ipcMain.handle(ERROR_HANDLER_CHANNEL, async (evt, ...args) => {
 		handleError(...args);
@@ -31,7 +32,7 @@ let options = {
 	showDialog: !isDev
 };
 
-const handleError = (title, error) => {
+const handleError = (title = `${appName} encountered an error`, error) => {
 	error = ensureError(error);
 
 	try {
@@ -118,7 +119,6 @@ module.exports = inputOptions => {
 
 module.exports.logError = (error, options) => {
 	options = {
-		title: `${appName} encountered an error`,
 		...options
 	};
 
