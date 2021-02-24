@@ -22,9 +22,6 @@ if (process.type === 'renderer') {
 	});
 }
 
-// The dialog.showMessageBox method has been split into a sync and an async variant in Electron 6.0.0
-const showMessageBox = dialog.showMessageBoxSync || dialog.showMessageBox;
-
 let installed = false;
 
 let options = {
@@ -56,7 +53,7 @@ const handleError = (title = `${appName} encountered an error`, error) => {
 			}
 
 			// Intentionally not using the `title` option as it's not shown on macOS
-			const buttonIndex = showMessageBox({
+			const buttonIndex = dialog.showMessageBoxSync({
 				type: 'error',
 				buttons,
 				defaultId: 0,
