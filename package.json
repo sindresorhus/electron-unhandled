@@ -41,7 +41,7 @@
 	},
 	"devDependencies": {
 		"ava": "^2.2.0",
-		"electron": "^6.0.1",
+		"electron": "^7.0.0",
 		"electron-util": "^0.12.1",
 		"execa": "^2.0.3",
 		"tsd": "^0.7.3",
