@@ -88,7 +88,9 @@ module.exports = inputOptions => {
 	};
 
 	if (process.type === 'renderer') {
+		//	Debounced because some packages, for example React, because of their error boundry feature, throws many identical uncaught errors
 		const errorHandler = debounce(error => {
+			options.logger(error);
 			invokeErrorHandler('Unhandled Error', error);
 		}, 200);
 		window.addEventListener('error', event => {
@@ -97,6 +99,7 @@ module.exports = inputOptions => {
 		});
 
 		const rejectionHandler = debounce(reason => {
+			options.logger(reason);
 			invokeErrorHandler('Unhandled Promise Rejection', reason);
 		}, 200);
 		window.addEventListener('unhandledrejection', event => {
@@ -120,6 +123,8 @@ module.exports.logError = (error, options) => {
 	};
 
 	if (typeof invokeErrorHandler === 'function') {
-		invokeErrorHandler(options.title, error)
-	} else handleError(options.title, error);
+		invokeErrorHandler(options.title, error);
+	} else {
+		handleError(options.title, error);
+	}
 };
