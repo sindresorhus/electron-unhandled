@@ -11,7 +11,7 @@ You can use this module directly in both the main and renderer process.
 $ npm install electron-unhandled
 ```
 
-*Requires Electron 5 or later.*
+*Requires Electron 7 or later.*
 
 
 ## Usage
