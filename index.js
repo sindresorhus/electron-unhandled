@@ -3,7 +3,6 @@ const {app, dialog, clipboard} = require('electron');
 const cleanStack = require('clean-stack');
 const ensureError = require('ensure-error');
 const debounce = require('lodash.debounce');
-const isDev = require('electron-is-dev');
 
 let appName;
 
@@ -26,7 +25,7 @@ let installed = false;
 
 let options = {
 	logger: console.error,
-	showDialog: !isDev
+	showDialog: process.type !== 'renderer' && !require('electron-is-dev')
 };
 
 const handleError = (title = `${appName} encountered an error`, error) => {
