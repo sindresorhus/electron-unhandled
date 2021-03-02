@@ -20,3 +20,7 @@ test('error', async t => {
 test('rejection', async t => {
 	await t.notThrowsAsync(run('fixture-rejection.js'));
 });
+
+test('filter', async t => {
+	await t.notThrowsAsync(run('fixture-filter-error-message.js'));
+});

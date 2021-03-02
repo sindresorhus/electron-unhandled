@@ -51,6 +51,17 @@ Present an error dialog to the user.
 
 <img src="screenshot.png" width="532">
 
+#### filter
+
+Type: `Array<RegExp>`<br>
+Default: `[]`
+
+Filter option that receives an array of regex. ectron-unhandled would not show the error dialog if error message passed by any of regex.
+
+
+Can be useful if you want to filter some error messages.
+
+
 #### reportButton
 
 Type: `Function`<br>
