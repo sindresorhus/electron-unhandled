@@ -1,6 +1,6 @@
 {
 	"name": "electron-unhandled",
-	"version": "3.0.2",
+	"version": "3.0.3",
 	"description": "Catch unhandled errors and promise rejections in your Electron app",
 	"license": "MIT",
 	"repository": "sindresorhus/electron-unhandled",
@@ -35,7 +35,7 @@
 	],
 	"dependencies": {
 		"clean-stack": "^2.1.0",
-		"electron-is-dev": "^1.0.1",
+		"electron-is-dev": "^2.0.0",
 		"ensure-error": "^2.0.0",
 		"lodash.debounce": "^4.0.8"
 	},
