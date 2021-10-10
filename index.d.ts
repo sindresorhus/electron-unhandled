@@ -17,6 +17,15 @@ declare namespace unhandled {
 		readonly showDialog?: boolean;
 
 		/**
+		Filter errors which should not be logged or shown to the user.
+
+		Can be useful if you want to fail silently for classes of unhandled errors like ERR_NETWORK_DISCONNECTED.
+
+		Default: no errors are filtered
+		*/
+		readonly filter?: (error: Error) => boolean;
+
+		/**
 		When specified, the error dialog will include a `Report…` button, which when clicked, executes the given function with the error as the first argument.
 
 		@default undefined

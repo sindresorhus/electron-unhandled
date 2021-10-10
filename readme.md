@@ -42,6 +42,15 @@ Custom logger that receives the error.
 
 Can be useful if you for example integrate with Sentry.
 
+#### filter
+
+Type: `Function`<br>
+Default: No errors are filtered.
+
+Filter errors which should not be logged or shown to the user.
+
+Can be useful if you want to fail silently for classes of unhandled errors like ERR_NETWORK_DISCONNECTED.
+
 #### showDialog
 
 Type: `boolean`<br>
