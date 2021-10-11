@@ -21,7 +21,7 @@ declare namespace unhandled {
 
 		Can be useful if you want to fail silently for classes of unhandled errors like ERR_NETWORK_DISCONNECTED.
 
-		Default: no errors are filtered
+		Default: No errors are filtered
 		*/
 		readonly filter?: (error: Error) => boolean;
 

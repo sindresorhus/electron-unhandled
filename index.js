@@ -24,7 +24,7 @@ let options = {
 const handleError = (title, error) => {
 	error = ensureError(error);
 
-	if (options.filter(error)) {
+	if (options.filter && options.filter(error)) {
 		return;
 	}
 

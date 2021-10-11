@@ -44,7 +44,7 @@ Can be useful if you for example integrate with Sentry.
 
 #### filter
 
-Type: `Function`<br>
+Type: `(error: Error) => boolean`<br>
 Default: No errors are filtered.
 
 Filter errors which should not be logged or shown to the user.
