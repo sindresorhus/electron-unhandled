@@ -20,7 +20,8 @@ const tryMakeSerialized = arg => {
 
 if (process.type === 'renderer') {
 	const {ipcRenderer} = require('electron');
-	invokeErrorHandler = async (title, error) => {
+	//	Default to 'App' because I don't think we can populate `appName` reliably here without remote or adding more IPC logic
+	invokeErrorHandler = async (title = `App encountered an error`, error) => {
 	 try {
 		await ipcRenderer.invoke(ERROR_HANDLER_CHANNEL, title, error);
 		return
