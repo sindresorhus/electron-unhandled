@@ -27,8 +27,4 @@ let mainWindow;
 	});
 	mainWindow.openDevTools()
 	await mainWindow.loadURL('https://google.com');
-
-	ipcMain.handle('test', args => {
-		return 'Test completed successfully'
-	})
 })();

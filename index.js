@@ -56,6 +56,7 @@ let options = {
 	showDialog: process.type !== 'renderer' && !require('electron-is-dev')
 };
 
+// NOTE: The ES6 default for title will only be used if the error is invoked from the main process directly. When invoked via the renderer, it will use the ES6 default from invokeErrorHandler
 const handleError = (title = `${appName} encountered an error`, error) => {
 	error = ensureError(error);
 
