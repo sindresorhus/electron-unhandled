@@ -1,5 +1,6 @@
 'use strict';
-const {app, BrowserWindow} = require('electron');
+const {app, BrowserWindow, ipcMain} = require('electron');
+const path = require('path')
 const {openNewGitHubIssue, debugInfo} = require('electron-util');
 const unhandled = require('.');
 
@@ -19,8 +20,15 @@ let mainWindow;
 (async () => {
 	await app.whenReady();
 
-	mainWindow = new BrowserWindow();
+	mainWindow = new BrowserWindow({
+		webPreferences: {
+			preload: path.join(__dirname, 'examplePreload.js')
+		}
+	});
+	mainWindow.openDevTools()
 	await mainWindow.loadURL('https://google.com');
 
-	unhandled.logError(new Error('Test'), {title: 'Custom Title'});
+	ipcMain.handle('test', args => {
+		return 'Test completed successfully'
+	})
 })();
