@@ -19,7 +19,7 @@ declare namespace unhandled {
 		/**
 		Filter errors which should not be logged or shown to the user.
 
-		Can be useful if you want to fail silently for classes of unhandled errors like ERR_NETWORK_DISCONNECTED.
+		Can be useful if you want to fail silently for classes of unhandled errors like ERR_NETWORK_DISCONNECTED. The error object will have `.name` and `.message` props, which can be used to filter.
 
 		Default: No errors are filtered
 		*/

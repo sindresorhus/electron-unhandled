@@ -21,6 +21,6 @@ test('rejection', async t => {
 	await t.notThrowsAsync(run('fixture-rejection.js'));
 });
 
-test('fiter', async t => {
+test('filter', async t => {
 	await t.notThrowsAsync(run('fixture-filter.js'));
 });
