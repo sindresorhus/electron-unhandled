@@ -3,6 +3,7 @@ const {app, dialog, clipboard} = require('electron');
 const cleanStack = require('clean-stack');
 const ensureError = require('ensure-error');
 const debounce = require('lodash.debounce');
+const {serialize} = require('v8');
 
 let appName;
 
@@ -10,14 +11,40 @@ let invokeErrorHandler;
 
 const ERROR_HANDLER_CHANNEL = 'electron-unhandled.ERROR';
 
+const tryMakeSerialized = arg => {
+	try {
+		const serialized = serialize(arg);
+		if (serialized) return serialized;
+	} catch {}
+}
+
 if (process.type === 'renderer') {
 	const {ipcRenderer} = require('electron');
-	invokeErrorHandler = async (...args) => ipcRenderer.invoke(ERROR_HANDLER_CHANNEL, ...args);
+	invokeErrorHandler = async (title, error) => {
+	 try {
+		await ipcRenderer.invoke(ERROR_HANDLER_CHANNEL, title, error);
+		return
+		} catch (invokeErr) {
+			if (invokeErr.message === 'An object could not be cloned.') {
+				// 1. If serialization failed, force the passed arg to an error format
+				error = ensureError(error)
+
+				// 2. Then attempt serialization on each property, defaulting to undefined otherwise
+				const serialized = {
+					name: tryMakeSerialized(error.name),
+					message: tryMakeSerialized(error.message),
+					stack: tryMakeSerialized(error.stack),
+				};
+				// 3. Invoke the error handler again with only the serialized error properties
+				ipcRenderer.invoke(ERROR_HANDLER_CHANNEL, title, serialized);
+			}
+		}
+	}
 } else {
 	appName = 'name' in app ? app.name : app.getName();
 	const {ipcMain} = require('electron');
-	ipcMain.handle(ERROR_HANDLER_CHANNEL, async (evt, ...args) => {
-		handleError(...args);
+	ipcMain.handle(ERROR_HANDLER_CHANNEL, async (evt, title, error) => {
+		handleError(title, error);
 	});
 }
 
