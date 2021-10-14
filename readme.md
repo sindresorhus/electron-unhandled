@@ -49,7 +49,7 @@ Default: No errors are filtered.
 
 Filter errors which should not be logged or shown to the user.
 
-Can be useful if you want to fail silently for classes of unhandled errors like ERR_NETWORK_DISCONNECTED. The error object will have `.name` and `.message` props, which can be used to filter.
+This can be useful if you want to fail silently for classes of unhandled errors like `ERR_NETWORK_DISCONNECTED`. The `error` is guaranteed to be an object with at least a `.name` and `.message` property, which can be used to filter.
 
 #### showDialog
 
