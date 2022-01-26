@@ -27,11 +27,15 @@ unhandled();
 
 ### unhandled(options?)
 
-You probably want to call this both in the main process and any renderer processes to catch all possible errors.
+You probably want to call this both in the `main` process and any `renderer` processes to catch all possible errors. 
+
+Note: At minimum, this function must be called in the `main` process
 
 ### options
 
 Type: `object`
+
+Note: Options can only be specified in the `main` process
 
 #### logger
 
