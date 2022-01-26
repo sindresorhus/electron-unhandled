@@ -28,7 +28,7 @@ if (process.type === 'renderer') {
 		} catch (invokeErr) {
 			if (invokeErr.message === 'An object could not be cloned.') {
 				// 1. If serialization failed, force the passed arg to an error format
-				error = ensureError(error)
+				error = ensureError(error);
 
 				// 2. Then attempt serialization on each property, defaulting to undefined otherwise
 				const serialized = {
