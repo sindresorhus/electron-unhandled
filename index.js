@@ -1,9 +1,9 @@
 'use strict';
 const {app, dialog, clipboard} = require('electron');
+const {serialize} = require('v8');
 const cleanStack = require('clean-stack');
 const ensureError = require('ensure-error');
 const debounce = require('lodash.debounce');
-const {serialize} = require('v8');
 
 let appName;
 
@@ -14,19 +14,21 @@ const ERROR_HANDLER_CHANNEL = 'electron-unhandled.ERROR';
 const tryMakeSerialized = arg => {
 	try {
 		const serialized = serialize(arg);
-		if (serialized) return serialized;
+		if (serialized) {
+			return serialized;
+		}
 	} catch {}
-}
+};
 
 if (process.type === 'renderer') {
 	const {ipcRenderer} = require('electron');
 	//	Default to 'App' because I don't think we can populate `appName` reliably here without remote or adding more IPC logic
-	invokeErrorHandler = async (title = `App encountered an error`, error) => {
-	 try {
-		await ipcRenderer.invoke(ERROR_HANDLER_CHANNEL, title, error);
-		return
-		} catch (invokeErr) {
-			if (invokeErr.message === 'An object could not be cloned.') {
+	invokeErrorHandler = async (title = 'App encountered an error', error) => {
+		try {
+			await ipcRenderer.invoke(ERROR_HANDLER_CHANNEL, title, error);
+			return;
+		} catch (invokeError) {
+			if (invokeError.message === 'An object could not be cloned.') {
 				// 1. If serialization failed, force the passed arg to an error format
 				error = ensureError(error);
 
@@ -34,13 +36,13 @@ if (process.type === 'renderer') {
 				const serialized = {
 					name: tryMakeSerialized(error.name),
 					message: tryMakeSerialized(error.message),
-					stack: tryMakeSerialized(error.stack),
+					stack: tryMakeSerialized(error.stack)
 				};
 				// 3. Invoke the error handler again with only the serialized error properties
 				ipcRenderer.invoke(ERROR_HANDLER_CHANNEL, title, serialized);
 			}
 		}
-	}
+	};
 } else {
 	appName = 'name' in app ? app.name : app.getName();
 	const {ipcMain} = require('electron');

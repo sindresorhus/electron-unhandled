@@ -1,6 +1,6 @@
 'use strict';
-const {app, BrowserWindow, ipcMain} = require('electron');
-const path = require('path')
+const {app, BrowserWindow} = require('electron');
+const path = require('path');
 const {openNewGitHubIssue, debugInfo} = require('electron-util');
 const unhandled = require('.');
 
@@ -22,9 +22,9 @@ let mainWindow;
 
 	mainWindow = new BrowserWindow({
 		webPreferences: {
-			preload: path.join(__dirname, 'examplePreload.js')
+			preload: path.join(__dirname, 'example-preload.js')
 		}
 	});
-	mainWindow.openDevTools()
+	mainWindow.openDevTools();
 	await mainWindow.loadURL('https://google.com');
 })();
