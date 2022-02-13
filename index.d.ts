@@ -1,4 +1,7 @@
 declare namespace unhandled {
+	/**
+	__Note:__ Options can only be specified in the `main` process.
+	*/
 	interface UnhandledOptions {
 		/**
 		Custom logger that receives the error.
@@ -44,7 +47,7 @@ declare namespace unhandled {
 
 	interface LogErrorOptions {
 		/**
-		Title of the error dialog.
+		The title of the error dialog.
 
 		@default `${appName} encountered an error`
 		*/
@@ -56,7 +59,9 @@ declare const unhandled: {
 	/**
 	Catch unhandled errors and promise rejections in your [Electron](https://electronjs.org) app.
 
-	You probably want to call this both in the main process and any renderer processes to catch all possible errors.
+	You probably want to call this both in the `main` process and any `renderer` processes to catch all possible errors.
+
+	__Note:__ At minimum, this function must be called in the `main` process.
 	*/
 	(options?: unhandled.UnhandledOptions): void;
 

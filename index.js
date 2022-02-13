@@ -11,9 +11,9 @@ let invokeErrorHandler;
 
 const ERROR_HANDLER_CHANNEL = 'electron-unhandled.ERROR';
 
-const tryMakeSerialized = arg => {
+const tryMakeSerialized = argument => {
 	try {
-		const serialized = serialize(arg);
+		const serialized = serialize(argument);
 		if (serialized) {
 			return serialized;
 		}
@@ -27,7 +27,7 @@ if (process.type === 'renderer') {
 		try {
 			await ipcRenderer.invoke(ERROR_HANDLER_CHANNEL, title, error);
 			return;
-		} catch (invokeError) {
+		} catch (invokeError) { // eslint-disable-line unicorn/catch-error-name
 			if (invokeError.message === 'An object could not be cloned.') {
 				// 1. If serialization failed, force the passed arg to an error format
 				error = ensureError(error);

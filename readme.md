@@ -4,15 +4,13 @@
 
 You can use this module directly in both the main and renderer process.
 
-
 ## Install
 
-```
-$ npm install electron-unhandled
+```sh
+npm install electron-unhandled
 ```
 
-*Requires Electron 7 or later.*
-
+*Requires Electron 14 or later.*
 
 ## Usage
 
@@ -22,24 +20,23 @@ const unhandled = require('electron-unhandled');
 unhandled();
 ```
 
-
 ## API
 
 ### unhandled(options?)
 
 You probably want to call this both in the `main` process and any `renderer` processes to catch all possible errors. 
 
-Note: At minimum, this function must be called in the `main` process
+**Note:** At minimum, this function must be called in the `main` process.
 
 ### options
 
 Type: `object`
 
-Note: Options can only be specified in the `main` process
+Note: Options can only be specified in the `main` process.
 
 #### logger
 
-Type: `Function`<br>
+Type: `Function`\
 Default: `console.error`
 
 Custom logger that receives the error.
@@ -48,7 +45,7 @@ Can be useful if you for example integrate with Sentry.
 
 #### showDialog
 
-Type: `boolean`<br>
+Type: `boolean`\
 Default: [Only in production](https://github.com/sindresorhus/electron-is-dev)
 
 Present an error dialog to the user.
@@ -57,7 +54,7 @@ Present an error dialog to the user.
 
 #### reportButton
 
-Type: `Function`<br>
+Type: `Function`\
 Default: `undefined`
 
 When specified, the error dialog will include a `Report…` button, which when clicked, executes the given function with the error as the first argument.
@@ -97,11 +94,10 @@ Type: `object`
 
 ##### title
 
-Type: `string`<br>
+Type: `string`\
 Default: `${appName} encountered an error`
 
-Title of the error dialog.
-
+The title of the error dialog.
 
 ## Related
 
