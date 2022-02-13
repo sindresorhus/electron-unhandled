@@ -11,7 +11,7 @@ You can use this module directly in both the main and renderer process.
 $ npm install electron-unhandled
 ```
 
-*Requires Electron 5 or later.*
+*Requires Electron 7 or later.*
 
 
 ## Usage
@@ -27,11 +27,15 @@ unhandled();
 
 ### unhandled(options?)
 
-You probably want to call this both in the main process and any renderer processes to catch all possible errors.
+You probably want to call this both in the `main` process and any `renderer` processes to catch all possible errors. 
+
+Note: At minimum, this function must be called in the `main` process
 
 ### options
 
 Type: `object`
+
+Note: Options can only be specified in the `main` process
 
 #### logger
 
