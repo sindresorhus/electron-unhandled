@@ -1,24 +1,15 @@
 'use strict';
 const {app, dialog, clipboard} = require('electron');
-const {serialize} = require('v8');
 const cleanStack = require('clean-stack');
 const ensureError = require('ensure-error');
 const debounce = require('lodash.debounce');
+const {serializeError} = require('serialize-error');
 
 let appName;
 
 let invokeErrorHandler;
 
 const ERROR_HANDLER_CHANNEL = 'electron-unhandled.ERROR';
-
-const tryMakeSerialized = argument => {
-	try {
-		const serialized = serialize(argument);
-		if (serialized) {
-			return serialized;
-		}
-	} catch {}
-};
 
 if (process.type === 'renderer') {
 	const {ipcRenderer} = require('electron');
@@ -33,11 +24,7 @@ if (process.type === 'renderer') {
 				error = ensureError(error);
 
 				// 2. Then attempt serialization on each property, defaulting to undefined otherwise
-				const serialized = {
-					name: tryMakeSerialized(error.name),
-					message: tryMakeSerialized(error.message),
-					stack: tryMakeSerialized(error.stack)
-				};
+				const serialized = serializeError(error);
 				// 3. Invoke the error handler again with only the serialized error properties
 				ipcRenderer.invoke(ERROR_HANDLER_CHANNEL, title, serialized);
 			}
