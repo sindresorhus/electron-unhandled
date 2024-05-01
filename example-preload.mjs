@@ -1,4 +1,4 @@
-const {logError} = require('.');
+import {logError} from './index.js';
 
 window.logError = logError;
 
