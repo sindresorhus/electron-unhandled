@@ -61,14 +61,24 @@ When specified, the error dialog will include a `Report…` button, which when c
 
 ```js
 import unhandled from 'electron-unhandled';
-import {openNewGitHubIssue, debugInfo} from 'electron-util';
+import { openNewGitHubIssue } from 'electron-util';
+import { debugInfo } from 'electron-util/main';
 
 unhandled({
 	reportButton: error => {
 		openNewGitHubIssue({
 			user: 'sindresorhus',
 			repo: 'electron-unhandled',
-			body: `\`\`\`\n${error.stack}\n\`\`\`\n\n---\n\n${debugInfo()}`
+        		body: `
+## Node.js error stack
+
+\`\`\`
+${stack}
+\`\`\`
+
+## Node.js debug info
+
+${debugInfo()}`
 		});
 	}
 });
