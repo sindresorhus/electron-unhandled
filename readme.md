@@ -61,8 +61,8 @@ When specified, the error dialog will include a `Report…` button, which when c
 
 ```js
 import unhandled from 'electron-unhandled';
-import { openNewGitHubIssue } from 'electron-util';
-import { debugInfo } from 'electron-util/main';
+import {openNewGitHubIssue} from 'electron-util';
+import {debugInfo} from 'electron-util/main';
 
 unhandled({
 	reportButton: error => {
