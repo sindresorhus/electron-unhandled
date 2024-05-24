@@ -69,7 +69,7 @@ unhandled({
 		openNewGitHubIssue({
 			user: 'sindresorhus',
 			repo: 'electron-unhandled',
-        		body: `
+			body: `
 ## Node.js error stack
 
 \`\`\`
