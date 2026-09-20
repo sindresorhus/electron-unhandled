@@ -2,7 +2,7 @@ import electron from 'electron';
 import test from 'ava';
 import {execa} from 'execa';
 
-// TODO: Improve these tests when https://github.com/avajs/ava/issues/1332 is fixed
+// The fixtures run in their own Electron process, because ava cannot run its test files in the same process (https://github.com/avajs/ava/issues/1332)
 
 const run = async file => execa(electron, [file], {
 	cwd: import.meta.dirname,

@@ -58,39 +58,37 @@ const handleError = (title = `${appName} encountered an error`, error) => {
 		return;
 	}
 
-	if (options.showDialog) {
-		const stack = cleanStack(error.stack);
+	if (!options.showDialog) {
+		return;
+	}
 
-		if (app.isReady()) {
-			const buttons = [
-				'OK',
-				process.platform === 'darwin' ? 'Copy Error' : 'Copy error',
-			];
+	const stack = cleanStack(error.stack);
 
-			if (options.reportButton) {
-				buttons.push('Report…');
-			}
+	if (!app.isReady()) {
+		dialog.showErrorBox(title, stack);
+		return;
+	}
 
-			// Intentionally not using the `title` option as it's not shown on macOS
-			const buttonIndex = dialog.showMessageBoxSync({
-				type: 'error',
-				buttons,
-				defaultId: 0,
-				noLink: true,
-				message: title,
-				detail: cleanStack(error.stack, {pretty: true}),
-			});
+	const buttons = [
+		'OK',
+		process.platform === 'darwin' ? 'Copy Error' : 'Copy error',
+		...(options.reportButton ? ['Report…'] : []),
+	];
 
-			if (buttonIndex === 1) {
-				clipboard.writeText(`${title}\n${stack}`);
-			}
+	// Intentionally not using the `title` option as it's not shown on macOS
+	const buttonIndex = dialog.showMessageBoxSync({
+		type: 'error',
+		buttons,
+		defaultId: 0,
+		noLink: true,
+		message: title,
+		detail: cleanStack(error.stack, {pretty: true}),
+	});
 
-			if (buttonIndex === 2) {
-				options.reportButton(error);
-			}
-		} else {
-			dialog.showErrorBox(title, stack);
-		}
+	if (buttonIndex === 1) {
+		clipboard.writeText(`${title}\n${stack}`);
+	} else if (buttonIndex === 2) {
+		options.reportButton(error);
 	}
 };
 
@@ -111,7 +109,7 @@ export default function unhandled(inputOptions) {
 		const errorHandler = debounce(error => {
 			invokeErrorHandler('Unhandled Error', error);
 		}, 200);
-		window.addEventListener('error', event => {
+		globalThis.addEventListener('error', event => {
 			event.preventDefault();
 			errorHandler(event.error || event);
 		});
@@ -119,7 +117,7 @@ export default function unhandled(inputOptions) {
 		const rejectionHandler = debounce(reason => {
 			invokeErrorHandler('Unhandled Promise Rejection', reason);
 		}, 200);
-		window.addEventListener('unhandledrejection', event => {
+		globalThis.addEventListener('unhandledrejection', event => {
 			event.preventDefault();
 			rejectionHandler(event.reason);
 		});
@@ -134,14 +132,10 @@ export default function unhandled(inputOptions) {
 	}
 }
 
-export function logError(error, options) {
-	options = {
-		...options,
-	};
-
+export function logError(error, {title} = {}) {
 	if (typeof invokeErrorHandler === 'function') {
-		invokeErrorHandler(options.title, error);
+		invokeErrorHandler(title, error);
 	} else {
-		handleError(options.title, error);
+		handleError(title, error);
 	}
 }

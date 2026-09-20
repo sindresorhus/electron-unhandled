@@ -1,6 +1,7 @@
+import {contextBridge} from 'electron';
 import {logError} from './index.js';
 
-window.logError = logError;
+contextBridge.exposeInMainWorld('logError', logError);
 
 setTimeout(() => {
 	logError(Symbol('Tests handling of non-serializable values'));
