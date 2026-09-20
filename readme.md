@@ -10,7 +10,7 @@ You can use this module in both the main process and renderer processes. See [Re
 npm install electron-unhandled
 ```
 
-*Requires Electron 30 or later.*
+*Requires Electron 44 or later.*
 
 ## Usage
 
