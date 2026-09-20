@@ -109,6 +109,8 @@ Catch unhandled errors and promise rejections in your [Electron](https://electro
 You probably want to call this both in the `main` process and any `renderer` processes to catch all possible errors.
 
 __Note:__ At minimum, this function must be called in the `main` process.
+
+A renderer process that crashes or stops responding is also reported. Those errors have no stack trace, so the dialog shows the message only. Windows created after this call are watched.
 */
 export default function unhandled(options?: UnhandledOptions): void;
 

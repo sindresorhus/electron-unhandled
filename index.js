@@ -14,6 +14,14 @@ let shouldShowDialog = process.type !== 'renderer';
 
 const ERROR_HANDLER_CHANNEL = 'electron-unhandled.ERROR';
 
+const rendererCrashReasons = new Set([
+	'crashed',
+	'abnormal-exit',
+	'oom',
+	'launch-failed',
+	'integrity-failure',
+]);
+
 /*	The main process modules are imported here and not at the top level because
 	renderer processes only expose `ipcRenderer` and a few other modules. */
 if (process.type === 'renderer') {
@@ -119,6 +127,17 @@ const handleError = (title = `${appName} encountered an error`, error, {showStac
 	Use the message of the event instead, so the error is readable. */
 const errorFromErrorEvent = event => new Error(event.message || 'Unknown error');
 
+// The event of a renderer process has no stack trace of the app to show, so only report the message
+const reportRendererError = (title, message) => {
+	handleError(title, new Error(message), {showStackTrace: false});
+};
+
+// A page has no URL before it has loaded, for example when its renderer crashes during startup
+const pageDescription = webContents => {
+	const url = webContents.getURL();
+	return url ? `The page for "${url}"` : 'A page';
+};
+
 export default function unhandled(inputOptions) {
 	if (isInstalled) {
 		return;
@@ -155,6 +174,33 @@ export default function unhandled(inputOptions) {
 
 		process.on('unhandledRejection', error => {
 			handleError('Unhandled Promise Rejection', error);
+		});
+
+		app.on('render-process-gone', (event, webContents, details) => {
+			// The other reasons mean that the renderer did not fail, for example a window that was closed, a renderer that the app killed, or memory the system reclaimed
+			if (!rendererCrashReasons.has(details.reason)) {
+				return;
+			}
+
+			reportRendererError(`${pageDescription(webContents)} crashed`, `The renderer process exited with reason "${details.reason}" (exit code: ${details.exitCode})`);
+		});
+
+		app.on('web-contents-created', (event, webContents) => {
+			let isUnresponsive = false;
+
+			webContents.on('unresponsive', () => {
+				// The event repeats while the page stays unresponsive, so report it only once
+				if (isUnresponsive) {
+					return;
+				}
+
+				isUnresponsive = true;
+				reportRendererError(`${pageDescription(webContents)} is not responding`, 'The renderer process did not respond to an input event');
+			});
+
+			webContents.on('responsive', () => {
+				isUnresponsive = false;
+			});
 		});
 	}
 }

@@ -39,6 +39,14 @@ test('message', async t => {
 	await t.notThrowsAsync(run('fixture-message.js'));
 });
 
+test('crashed renderer process', async t => {
+	await t.notThrowsAsync(run('fixture-crashed-renderer.js'));
+});
+
+test('renderer process events', async t => {
+	await t.notThrowsAsync(run('fixture-renderer-events.js'));
+});
+
 test('renderer', async t => {
 	await t.notThrowsAsync(run('fixture-renderer.js'));
 });

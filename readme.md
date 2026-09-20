@@ -24,9 +24,11 @@ unhandled();
 
 ### unhandled(options?)
 
-You probably want to call this both in the `main` process and any `renderer` processes to catch all possible errors. 
+You probably want to call this both in the `main` process and any `renderer` processes to catch all possible errors.
 
 **Note:** At minimum, this function must be called in the `main` process.
+
+A renderer process that crashes or stops responding is also reported. The reported error has no stack trace of your app, so the dialog shows the message only. Windows that are created after the call are watched.
 
 ### options
 
