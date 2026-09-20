@@ -9,7 +9,6 @@ let invokeErrorHandler;
 let app;
 let dialog;
 let clipboard;
-
 const ERROR_HANDLER_CHANNEL = 'electron-unhandled.ERROR';
 
 /*	The main process modules are imported here and not at the top level because
@@ -40,6 +39,7 @@ if (process.type === 'renderer') {
 	clipboard = electron.clipboard;
 
 	appName = 'name' in app ? app.name : app.getName();
+
 	electron.ipcMain.handle(ERROR_HANDLER_CHANNEL, async (event_, title, error) => {
 		handleError(title, error);
 	});
@@ -100,6 +100,10 @@ const handleError = (title = `${appName} encountered an error`, error) => {
 	}
 };
 
+/*	Some error events have no error object, for example a script error from another origin.
+	Use the message of the event instead, so the error is readable. */
+const errorFromErrorEvent = event => new Error(event.message || 'Unknown error');
+
 export default function unhandled(inputOptions) {
 	if (isInstalled) {
 		return;
@@ -119,7 +123,7 @@ export default function unhandled(inputOptions) {
 		}, 200);
 		globalThis.addEventListener('error', event => {
 			event.preventDefault();
-			errorHandler(event.error || event);
+			errorHandler(event.error || errorFromErrorEvent(event));
 		});
 
 		const rejectionHandler = debounce(reason => {

@@ -26,3 +26,7 @@ test('rejection', async t => {
 test('renderer', async t => {
 	await t.notThrowsAsync(run('fixture-renderer.js'));
 });
+
+test('renderer error event without an error object', async t => {
+	await t.notThrowsAsync(run('fixture-renderer-error-event.js'));
+});
