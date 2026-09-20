@@ -37,6 +37,24 @@ export type UnhandledOptions = {
 	readonly showDialog?: boolean;
 
 	/**
+	Function that receives the default message of the error dialog and returns the message to show.
+
+	Can be useful to add a prefix, or to translate the message.
+
+	@default undefined
+
+	@example
+	```
+	import unhandled from 'electron-unhandled';
+
+	unhandled({
+		message: message => `Please contact support: ${message}`
+	});
+	```
+	*/
+	readonly message?: (message: string) => string;
+
+	/**
 	Show the stack trace of the error in the error dialog and in the text that the `Copy Error` button copies. When disabled, the button copies the title and the type and message of the error only.
 
 	@default true

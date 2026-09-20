@@ -69,6 +69,23 @@ Present an error dialog to the user.
 
 <img src="screenshot.png" width="532">
 
+#### message
+
+Type: `(message: string) => string`\
+Default: `undefined`
+
+Function that receives the default message of the error dialog and returns the message to show.
+
+Can be useful to add a prefix, or to translate the message.
+
+```js
+import unhandled from 'electron-unhandled';
+
+unhandled({
+	message: message => `Please contact support: ${message}`
+});
+```
+
 #### showStackTrace
 
 Type: `boolean`\

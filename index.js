@@ -79,6 +79,11 @@ const handleError = (title = `${appName} encountered an error`, error, {showStac
 		return;
 	}
 
+	// The `message` option can rewrite the message of the dialog, for example to add a prefix or to translate it
+	if (options.message) {
+		title = options.message(title);
+	}
+
 	const stack = cleanStack(error.stack);
 
 	if (!app.isReady()) {
