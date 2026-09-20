@@ -6,6 +6,8 @@ import {execa} from 'execa';
 
 const run = async file => execa(electron, [file], {
 	cwd: import.meta.dirname,
+	// The fixtures quit the app when the error arrives. A timeout makes a fixture that never gets the error fail instead of hanging.
+	timeout: 30_000,
 	env: {
 		ELECTRON_ENABLE_LOGGING: true,
 		ELECTRON_ENABLE_STACK_DUMPING: true,
@@ -19,4 +21,8 @@ test('error', async t => {
 
 test('rejection', async t => {
 	await t.notThrowsAsync(run('fixture-rejection.js'));
+});
+
+test('renderer', async t => {
+	await t.notThrowsAsync(run('fixture-renderer.js'));
 });

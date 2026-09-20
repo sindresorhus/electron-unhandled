@@ -1,5 +1,4 @@
 import process from 'node:process';
-import {app, dialog, clipboard} from 'electron';
 import cleanStack from 'clean-stack';
 import ensureError from 'ensure-error';
 import debounce from 'lodash.debounce';
@@ -7,9 +6,14 @@ import {serializeError} from 'serialize-error';
 
 let appName;
 let invokeErrorHandler;
+let app;
+let dialog;
+let clipboard;
 
 const ERROR_HANDLER_CHANNEL = 'electron-unhandled.ERROR';
 
+/*	The main process modules are imported here and not at the top level because
+	renderer processes only expose `ipcRenderer` and a few other modules. */
 if (process.type === 'renderer') {
 	//	Default to 'App' because I don't think we can populate `appName` reliably here without remote or adding more IPC logic
 	invokeErrorHandler = async (title = 'App encountered an error', error) => {
@@ -30,9 +34,13 @@ if (process.type === 'renderer') {
 		}
 	};
 } else {
+	const electron = await import('electron');
+	app = electron.app;
+	dialog = electron.dialog;
+	clipboard = electron.clipboard;
+
 	appName = 'name' in app ? app.name : app.getName();
-	const {ipcMain} = await import('electron');
-	ipcMain.handle(ERROR_HANDLER_CHANNEL, async (event_, title, error) => {
+	electron.ipcMain.handle(ERROR_HANDLER_CHANNEL, async (event_, title, error) => {
 		handleError(title, error);
 	});
 }

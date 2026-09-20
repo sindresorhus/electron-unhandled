@@ -24,6 +24,8 @@ let mainWindow;
 	mainWindow = new BrowserWindow({
 		webPreferences: {
 			preload: path.join(import.meta.dirname, 'example-preload.mjs'),
+			// Needed because the preload is an ES module
+			sandbox: false,
 		},
 	});
 
