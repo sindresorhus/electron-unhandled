@@ -43,6 +43,23 @@ Custom logger that receives the error.
 
 Can be useful if you for example integrate with Sentry.
 
+#### filter
+
+Type: `(error: Error) => boolean`\
+Default: `undefined`
+
+Filter errors which should not be logged or shown to the user. Return `true` to discard the error.
+
+Can be useful if you want to fail silently for classes of unhandled errors like `ERR_NETWORK_DISCONNECTED`. The `error` is guaranteed to have at least a `name` and `message` property.
+
+```js
+import unhandled from 'electron-unhandled';
+
+unhandled({
+	filter: error => error.message.includes('ERR_NETWORK_DISCONNECTED')
+});
+```
+
 #### showDialog
 
 Type: `boolean`\

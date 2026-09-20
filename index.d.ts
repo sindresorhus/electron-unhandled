@@ -12,6 +12,24 @@ export type UnhandledOptions = {
 	readonly logger?: (error: Error) => void;
 
 	/**
+	Filter errors which should not be logged or shown to the user. Return `true` to discard the error.
+
+	Can be useful if you want to fail silently for classes of unhandled errors like `ERR_NETWORK_DISCONNECTED`. The `error` is guaranteed to have at least a `name` and `message` property.
+
+	@default undefined
+
+	@example
+	```
+	import unhandled from 'electron-unhandled';
+
+	unhandled({
+		filter: error => error.message.includes('ERR_NETWORK_DISCONNECTED')
+	});
+	```
+	*/
+	readonly filter?: (error: Error) => boolean;
+
+	/**
 	Present an error dialog to the user.
 
 	Default: [Only in production](https://github.com/sindresorhus/electron-is-dev).

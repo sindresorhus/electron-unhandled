@@ -27,6 +27,10 @@ test('rejection', async t => {
 	await t.notThrowsAsync(run('fixture-rejection.js'));
 });
 
+test('filter', async t => {
+	await t.notThrowsAsync(run('fixture-filter.js'));
+});
+
 test('renderer', async t => {
 	await t.notThrowsAsync(run('fixture-renderer.js'));
 });

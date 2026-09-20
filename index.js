@@ -64,6 +64,10 @@ let options = {
 const handleError = (title = `${appName} encountered an error`, error) => {
 	error = ensureError(error);
 
+	if (options.filter?.(error)) {
+		return;
+	}
+
 	try {
 		options.logger(error);
 	} catch (loggerError) {
