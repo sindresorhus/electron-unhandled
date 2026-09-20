@@ -48,7 +48,7 @@ export type UnhandledOptions = {
 	/**
 	Present an error dialog to the user.
 
-	Default: [Only in production](https://github.com/sindresorhus/electron-is-dev).
+	@default [Only in production](https://github.com/sindresorhus/electron-is-dev)
 	*/
 	readonly showDialog?: boolean;
 
@@ -85,7 +85,8 @@ export type UnhandledOptions = {
 	@example
 	```
 	import unhandled from 'electron-unhandled';
-	import {openNewGitHubIssue, debugInfo} from 'electron-util';
+	import {openNewGitHubIssue} from 'electron-util';
+	import {debugInfo} from 'electron-util/main';
 
 	unhandled({
 		reportButton: error => {
@@ -105,7 +106,9 @@ export type UnhandledOptions = {
 
 export type LogErrorOptions = {
 	/**
-	The title of the error dialog.
+	The text shown at the top of the error dialog. It is passed as the message of the dialog, because macOS does not show a dialog title.
+
+	In a renderer process the default is `App encountered an error`, because the app name is not available there.
 
 	@default `${appName} encountered an error`
 	*/
@@ -126,7 +129,9 @@ You probably want to call this both in the `main` process and any `renderer` pro
 
 __Note:__ At minimum, this function must be called in the `main` process.
 
-A renderer process that crashes or stops responding is also reported. Those errors have no stack trace, so the dialog shows the message only. Windows created after this call are watched.
+A renderer process that crashes or stops responding is also reported. The reported error has no stack trace of your app, so the dialog shows the message only. Pages created after this call are watched.
+
+To catch the errors of a page, call this in a preload script with `contextIsolation: false`, or bundle it into the code of the page with `nodeIntegration`. An ES module preload script also needs `sandbox: false`. See the readme for the full setup.
 */
 export default function unhandled(options?: UnhandledOptions): void;
 

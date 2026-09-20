@@ -25,7 +25,7 @@ const rendererCrashReasons = new Set([
 /*	The main process modules are imported here and not at the top level because
 	renderer processes only expose `ipcRenderer` and a few other modules. */
 if (process.type === 'renderer') {
-	//	Default to 'App' because I don't think we can populate `appName` reliably here without remote or adding more IPC logic
+	//	Default to 'App' because a renderer cannot read the app name synchronously, and a round trip to the main process would arrive after the default is applied
 	invokeErrorHandler = async (title = 'App encountered an error', error, options) => {
 		const {ipcRenderer} = await import('electron');
 
@@ -105,7 +105,7 @@ const handleError = (title = `${appName} encountered an error`, error, {showStac
 		...(options.reportButton ? ['Report…'] : []),
 	];
 
-	// Intentionally not using the `title` option as it's not shown on macOS
+	// Intentionally not setting the `title` of the dialog, because macOS ignores it. The message is passed as `message`.
 	const buttonIndex = dialog.showMessageBoxSync({
 		type: 'error',
 		buttons,
@@ -151,7 +151,7 @@ export default function unhandled(inputOptions) {
 	};
 
 	if (process.type === 'renderer') {
-		//	Debounced because some packages, for example React, because of their error boundry feature, throws many identical uncaught errors
+		//	Coalesce errors over 200 ms, because some packages, for example React, throw many uncaught errors in a burst for one problem. Only the last error of a burst is reported.
 		const errorHandler = debounce(error => {
 			invokeErrorHandler('Unhandled Error', error);
 		}, 200);
