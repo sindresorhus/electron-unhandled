@@ -31,6 +31,10 @@ test('filter', async t => {
 	await t.notThrowsAsync(run('fixture-filter.js'));
 });
 
+test('showStackTrace', async t => {
+	await t.notThrowsAsync(run('fixture-show-stack-trace.js'));
+});
+
 test('renderer', async t => {
 	await t.notThrowsAsync(run('fixture-renderer.js'));
 });

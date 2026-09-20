@@ -37,6 +37,13 @@ export type UnhandledOptions = {
 	readonly showDialog?: boolean;
 
 	/**
+	Show the stack trace of the error in the error dialog and in the text that the `Copy Error` button copies. When disabled, the button copies the title and the type and message of the error only.
+
+	@default true
+	*/
+	readonly showStackTrace?: boolean;
+
+	/**
 	When specified, the error dialog will include a `Report…` button, which when clicked, executes the given function with the error as the first argument.
 
 	@default undefined
@@ -69,6 +76,13 @@ export type LogErrorOptions = {
 	@default `${appName} encountered an error`
 	*/
 	readonly title?: string;
+
+	/**
+	Show the stack trace of the error in the error dialog and in the text that the `Copy Error` button copies. When disabled, the button copies the title and the type and message of the error only.
+
+	@default true, until the `showStackTrace` option of `unhandled()` says otherwise
+	*/
+	readonly showStackTrace?: boolean;
 };
 
 /**

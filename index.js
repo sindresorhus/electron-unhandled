@@ -18,11 +18,11 @@ const ERROR_HANDLER_CHANNEL = 'electron-unhandled.ERROR';
 	renderer processes only expose `ipcRenderer` and a few other modules. */
 if (process.type === 'renderer') {
 	//	Default to 'App' because I don't think we can populate `appName` reliably here without remote or adding more IPC logic
-	invokeErrorHandler = async (title = 'App encountered an error', error) => {
+	invokeErrorHandler = async (title = 'App encountered an error', error, options) => {
 		const {ipcRenderer} = await import('electron');
 
 		try {
-			await ipcRenderer.invoke(ERROR_HANDLER_CHANNEL, title, error);
+			await ipcRenderer.invoke(ERROR_HANDLER_CHANNEL, title, error, options);
 		} catch (invokeError) {
 			if (invokeError.message === 'An object could not be cloned.') {
 				// 1. If serialization failed, force the passed arg to an error format
@@ -31,7 +31,7 @@ if (process.type === 'renderer') {
 				// 2. Then attempt serialization on each property, defaulting to undefined otherwise
 				const serialized = serializeError(error);
 				// 3. Invoke the error handler again with only the serialized error properties
-				ipcRenderer.invoke(ERROR_HANDLER_CHANNEL, title, serialized);
+				ipcRenderer.invoke(ERROR_HANDLER_CHANNEL, title, serialized, options);
 			}
 		}
 	};
@@ -48,8 +48,8 @@ if (process.type === 'renderer') {
 	// The default is to show the dialog only in production. The `showDialog` option can override it.
 	shouldShowDialog = !isDevelopment;
 
-	electron.ipcMain.handle(ERROR_HANDLER_CHANNEL, async (event_, title, error) => {
-		handleError(title, error);
+	electron.ipcMain.handle(ERROR_HANDLER_CHANNEL, async (event_, title, error, options) => {
+		handleError(title, error, options);
 	});
 }
 
@@ -61,7 +61,7 @@ let options = {
 };
 
 // NOTE: The ES6 default for title will only be used if the error is invoked from the main process directly. When invoked via the renderer, it will use the ES6 default from invokeErrorHandler
-const handleError = (title = `${appName} encountered an error`, error) => {
+const handleError = (title = `${appName} encountered an error`, error, {showStackTrace = options.showStackTrace !== false} = {}) => {
 	error = ensureError(error);
 
 	if (options.filter?.(error)) {
@@ -82,7 +82,7 @@ const handleError = (title = `${appName} encountered an error`, error) => {
 	const stack = cleanStack(error.stack);
 
 	if (!app.isReady()) {
-		dialog.showErrorBox(title, stack);
+		dialog.showErrorBox(title, showStackTrace ? stack : '');
 		return;
 	}
 
@@ -99,11 +99,12 @@ const handleError = (title = `${appName} encountered an error`, error) => {
 		defaultId: 0,
 		noLink: true,
 		message: title,
-		detail: cleanStack(error.stack, {pretty: true}),
+		detail: showStackTrace ? cleanStack(error.stack, {pretty: true}) : undefined,
 	});
 
 	if (buttonIndex === 1) {
-		clipboard.writeText(`${title}\n${stack}`);
+		// Without the stack trace, copy the type and the message of the error, which are the first line of the stack trace
+		clipboard.writeText(showStackTrace ? `${title}\n${stack}` : `${title}\n${error.name}: ${error.message}`);
 	} else if (buttonIndex === 2) {
 		options.reportButton(error);
 	}
@@ -153,10 +154,10 @@ export default function unhandled(inputOptions) {
 	}
 }
 
-export function logError(error, {title} = {}) {
+export function logError(error, {title, showStackTrace} = {}) {
 	if (typeof invokeErrorHandler === 'function') {
-		invokeErrorHandler(title, error);
+		invokeErrorHandler(title, error, {showStackTrace});
 	} else {
-		handleError(title, error);
+		handleError(title, error, {showStackTrace});
 	}
 }

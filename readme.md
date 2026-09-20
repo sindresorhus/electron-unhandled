@@ -69,6 +69,13 @@ Present an error dialog to the user.
 
 <img src="screenshot.png" width="532">
 
+#### showStackTrace
+
+Type: `boolean`\
+Default: `true`
+
+Show the stack trace of the error in the error dialog and in the text that the `Copy Error` button copies. When disabled, the button copies the title and the type and message of the error only.
+
 #### reportButton
 
 Type: `Function`\
@@ -131,6 +138,13 @@ Type: `string`\
 Default: `${appName} encountered an error`
 
 The title of the error dialog.
+
+##### showStackTrace
+
+Type: `boolean`\
+Default: `true`
+
+Show the stack trace of the error in the error dialog and in the text that the `Copy Error` button copies. Defaults to the [`showStackTrace`](#showstacktrace) option of `unhandled()`.
 
 ## Related
 
