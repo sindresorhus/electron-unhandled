@@ -7,6 +7,22 @@ export type UnhandledOptions = {
 
 	Can be useful if you for example integrate with Sentry.
 
+	Use it to run your own code for an error, for example to restart the app:
+
+	@example
+	```
+	import {app} from 'electron';
+	import unhandled from 'electron-unhandled';
+
+	unhandled({
+		logger(error) {
+			console.error(error);
+			app.relaunch();
+			app.exit();
+		}
+	});
+	```
+
 	@default console.error
 	*/
 	readonly logger?: (error: Error) => void;

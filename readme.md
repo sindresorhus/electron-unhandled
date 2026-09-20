@@ -2,7 +2,7 @@
 
 > Catch unhandled errors and promise rejections in your [Electron](https://electronjs.org) app
 
-You can use this module directly in both the main and renderer process.
+You can use this module in both the main process and renderer processes. See [Renderer processes](#renderer-processes) for the setup that a renderer needs.
 
 ## Install
 
@@ -19,6 +19,17 @@ import unhandled from 'electron-unhandled';
 
 unhandled();
 ```
+
+### Renderer processes
+
+The module must run where it can see the errors, and it must be able to reach the main process. That has two consequences:
+
+- The module has to be bundled into your renderer code, or loaded from a [preload script](https://www.electronjs.org/docs/latest/tutorial/tutorial-preload). A `<script type="module">` in a page cannot resolve the imports of the module, such as `electron` and `node:process`.
+- The context must see the errors of the page. A preload script with `contextIsolation` enabled (the Electron default) does not receive errors from the page, so `unhandled()` in such a preload reports only the errors of the preload itself. Set `contextIsolation: false` to catch the errors of the page, or catch them in the page and send them to the main process yourself.
+
+The handlers are registered by the `unhandled()` call. They are not injected into windows that are created later, because a page cannot load the module without `nodeIntegration`. Call `unhandled()` in the code of each window instead.
+
+An ES module preload script needs `sandbox: false`, because [a sandboxed preload script cannot use ESM imports](https://www.electronjs.org/docs/latest/tutorial/esm#sandboxed-preload-scripts-cant-use-esm-imports).
 
 ## API
 
@@ -44,6 +55,21 @@ Default: `console.error`
 Custom logger that receives the error.
 
 Can be useful if you for example integrate with Sentry.
+
+Use it to run your own code for an error, for example to restart the app:
+
+```js
+import {app} from 'electron';
+import unhandled from 'electron-unhandled';
+
+unhandled({
+	logger(error) {
+		console.error(error);
+		app.relaunch();
+		app.exit();
+	}
+});
+```
 
 #### filter
 
