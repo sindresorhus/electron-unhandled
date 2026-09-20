@@ -54,3 +54,7 @@ test('renderer', async t => {
 test('renderer error event without an error object', async t => {
 	await t.notThrowsAsync(run('fixture-renderer-error-event.js'));
 });
+
+test('renderer error that the IPC channel cannot clone', async t => {
+	await t.notThrowsAsync(run('fixture-renderer-non-serializable.js'));
+});

@@ -4,6 +4,9 @@ import {openNewGitHubIssue} from 'electron-util';
 import {debugInfo} from 'electron-util/main';
 import unhandled from './index.js';
 
+// Without this the app name is "Electron", because the app is started from a file and not from a directory
+app.setName('electron-unhandled');
+
 unhandled({
 	showDialog: true,
 	reportButton(error) {

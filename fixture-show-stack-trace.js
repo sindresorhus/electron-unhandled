@@ -47,8 +47,8 @@ unhandled({showDialog: true});
 		try {
 			assert.strictEqual(dialogs.length, 3);
 			assert.strictEqual(typeof dialogs[0].detail, 'string');
-			assert.strictEqual(dialogs[1].detail, undefined);
-			assert.strictEqual(dialogs[2].detail, undefined);
+			assert.strictEqual(dialogs[1].detail, 'Error: Without a stack trace');
+			assert.strictEqual(dialogs[2].detail, 'Error: From a renderer');
 
 			assert.ok(copied[0].startsWith('Title\nError: With a stack trace\n'));
 			assert.ok(copied[0].includes('\n    at '));

@@ -2,7 +2,7 @@ import process from 'node:process';
 import cleanStack from 'clean-stack';
 import ensureError from 'ensure-error';
 import debounce from 'lodash.debounce';
-import {serializeError} from 'serialize-error';
+import {serializeError, deserializeError} from 'serialize-error';
 
 let appName;
 let invokeErrorHandler;
@@ -25,8 +25,8 @@ const rendererCrashReasons = new Set([
 /*	The main process modules are imported here and not at the top level because
 	renderer processes only expose `ipcRenderer` and a few other modules. */
 if (process.type === 'renderer') {
-	//	Default to 'App' because a renderer cannot read the app name synchronously, and a round trip to the main process would arrive after the default is applied
-	invokeErrorHandler = async (title = 'App encountered an error', error, options) => {
+	//	`title` can be undefined here, because only the main process knows the app name. The error handler applies the default.
+	invokeErrorHandler = async (title, error, options) => {
 		const {ipcRenderer} = await import('electron');
 
 		try {
@@ -57,7 +57,8 @@ if (process.type === 'renderer') {
 	shouldShowDialog = !isDevelopment;
 
 	electron.ipcMain.handle(ERROR_HANDLER_CHANNEL, async (event_, title, error, options) => {
-		handleError(title, error, options);
+		// A renderer that cannot send the error itself sends the serialized form of it
+		handleError(title, deserializeError(error), options);
 	});
 }
 
@@ -68,7 +69,7 @@ let options = {
 	showDialog: shouldShowDialog,
 };
 
-// NOTE: The ES6 default for title will only be used if the error is invoked from the main process directly. When invoked via the renderer, it will use the ES6 default from invokeErrorHandler
+// The default title uses the app name, which only the main process knows, so a renderer leaves the title undefined
 const handleError = (title = `${appName} encountered an error`, error, {showStackTrace = options.showStackTrace !== false} = {}) => {
 	error = ensureError(error);
 
@@ -92,10 +93,16 @@ const handleError = (title = `${appName} encountered an error`, error, {showStac
 		title = options.message(title);
 	}
 
+	/*	The stack trace of the error is shown when it points at code of the app. It does not for a value that is
+		not an error, because `ensure-error` wraps that value in a `NonError` at the place where it wraps it.
+		The first line of a stack trace is the type and the message of the error, so it stands alone. */
+	const errorDescription = `${error.name}: ${error.message}`;
+	const shouldShowStack = showStackTrace && error.name !== 'NonError';
+
 	const stack = cleanStack(error.stack);
 
 	if (!app.isReady()) {
-		dialog.showErrorBox(title, showStackTrace ? stack : '');
+		dialog.showErrorBox(title, shouldShowStack ? stack : errorDescription);
 		return;
 	}
 
@@ -112,12 +119,11 @@ const handleError = (title = `${appName} encountered an error`, error, {showStac
 		defaultId: 0,
 		noLink: true,
 		message: title,
-		detail: showStackTrace ? cleanStack(error.stack, {pretty: true}) : undefined,
+		detail: shouldShowStack ? cleanStack(error.stack, {pretty: true}) : errorDescription,
 	});
 
 	if (buttonIndex === 1) {
-		// Without the stack trace, copy the type and the message of the error, which are the first line of the stack trace
-		clipboard.writeText(showStackTrace ? `${title}\n${stack}` : `${title}\n${error.name}: ${error.message}`);
+		clipboard.writeText(shouldShowStack ? `${title}\n${stack}` : `${title}\n${errorDescription}`);
 	} else if (buttonIndex === 2) {
 		options.reportButton(error);
 	}

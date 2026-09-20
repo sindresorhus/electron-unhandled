@@ -46,11 +46,11 @@ unhandled({
 			'The renderer process exited with reason "crashed" (exit code: 1)',
 		]);
 
-		// The dialog shows the message, and without a stack trace
+		// The dialog shows the message and the error, and not a stack trace of the library
 		assert.deepStrictEqual(dialogs.map(({message, detail}) => [message, detail]), [
-			[`${description} is not responding`, undefined],
-			[`${description} is not responding`, undefined],
-			[`${description} crashed`, undefined],
+			[`${description} is not responding`, 'Error: The renderer process did not respond to an input event'],
+			[`${description} is not responding`, 'Error: The renderer process did not respond to an input event'],
+			[`${description} crashed`, 'Error: The renderer process exited with reason "crashed" (exit code: 1)'],
 		]);
 
 		app.quit();

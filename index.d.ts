@@ -73,6 +73,8 @@ export type UnhandledOptions = {
 	/**
 	Show the stack trace of the error in the error dialog and in the text that the `Copy Error` button copies. When disabled, the button copies the title and the type and message of the error only.
 
+	A value that is not an error has no stack trace of your app, so the dialog shows the type and message of the error only.
+
 	@default true
 	*/
 	readonly showStackTrace?: boolean;
@@ -108,8 +110,6 @@ export type LogErrorOptions = {
 	/**
 	The text shown at the top of the error dialog. It is passed as the message of the dialog, because macOS does not show a dialog title.
 
-	In a renderer process the default is `App encountered an error`, because the app name is not available there.
-
 	@default `${appName} encountered an error`
 	*/
 	readonly title?: string;
@@ -129,7 +129,7 @@ You probably want to call this both in the `main` process and any `renderer` pro
 
 __Note:__ At minimum, this function must be called in the `main` process.
 
-A renderer process that crashes or stops responding is also reported. The reported error has no stack trace of your app, so the dialog shows the message only. Pages created after this call are watched.
+A renderer process that crashes or stops responding is also reported. The reported error has no stack trace of your app, so the dialog and the copied text show the message without a stack trace. Pages created after this call are watched.
 
 To catch the errors of a page, call this in a preload script with `contextIsolation: false`, or bundle it into the code of the page with `nodeIntegration`. An ES module preload script also needs `sandbox: false`. See the readme for the full setup.
 */
