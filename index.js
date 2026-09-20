@@ -9,6 +9,9 @@ let invokeErrorHandler;
 let app;
 let dialog;
 let clipboard;
+// A renderer process cannot show a dialog
+let shouldShowDialog = process.type !== 'renderer';
+
 const ERROR_HANDLER_CHANNEL = 'electron-unhandled.ERROR';
 
 /*	The main process modules are imported here and not at the top level because
@@ -40,6 +43,11 @@ if (process.type === 'renderer') {
 
 	appName = 'name' in app ? app.name : app.getName();
 
+	// `electron-is-dev` uses the `app` module, so it can only be loaded in the main process. It is awaited here because `handleError` needs the value synchronously.
+	const {default: isDevelopment} = await import('electron-is-dev');
+	// The default is to show the dialog only in production. The `showDialog` option can override it.
+	shouldShowDialog = !isDevelopment;
+
 	electron.ipcMain.handle(ERROR_HANDLER_CHANNEL, async (event_, title, error) => {
 		handleError(title, error);
 	});
@@ -49,10 +57,7 @@ let isInstalled = false;
 
 let options = {
 	logger: console.error,
-	showDialog: process.type !== 'renderer' && (async () => { // eslint-disable-line unicorn/prefer-top-level-await
-		const {default: isDevelopment} = await import('electron-is-dev');
-		return isDevelopment;
-	})(),
+	showDialog: shouldShowDialog,
 };
 
 // NOTE: The ES6 default for title will only be used if the error is invoked from the main process directly. When invoked via the renderer, it will use the ES6 default from invokeErrorHandler

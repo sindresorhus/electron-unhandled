@@ -19,6 +19,10 @@ test('error', async t => {
 	await t.notThrowsAsync(run('fixture-error.js'));
 });
 
+test('show dialog is off by default outside production', async t => {
+	await t.notThrowsAsync(run('fixture-show-dialog-default.js'));
+});
+
 test('rejection', async t => {
 	await t.notThrowsAsync(run('fixture-rejection.js'));
 });
